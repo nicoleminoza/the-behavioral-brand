@@ -432,36 +432,3 @@ export const sources: Record<string, Source[]> = {
     },
   ],
 };
-
-/** A headline figure for the operator case: a number and what it measures. */
-export interface Metric {
-  value: string;
-  label: string;
-}
-
-/**
- * The operator case — the author's own work at Adobe Type (2012–2026). Distinct
- * from the nine benchmarks she observed: this is the one she led, the proof she has
- * built brand at scale, not only analyzed it, and the tech/B2B product-brand proof
- * the cultural corpus lacks. Figures are from her résumé and timeline; the
- * retention figure is flagged as correlational to keep the confounder discipline.
- */
-export const operatorCase = {
-  id: "adobe-fonts",
-  product: "Adobe Fonts",
-  role: "Senior PMM to Director of Product Management · Adobe Type · 2012–2026",
-  scope: "Led six product managers across a ~75-person organization.",
-  problem:
-    "Typekit was powerful and peripheral: a web-font tool most Creative Cloud members never noticed, buried a menu deep. The work was to make typography behave like a reason to stay, not a setting.",
-  solution:
-    "Rebranded Typekit into Adobe Fonts, a core membership benefit, and built the system beneath it. One text engine unified across twelve Creative Cloud apps. A usage-based royalty model that aligned foundry incentives with growth. Source Han Sans, the first open-source Pan-CJK typeface, extending the brand across Chinese, Japanese, and Korean by default. Typography stopped being a tool and became a behavior members lived inside.",
-  thesis:
-    "A brand that performs makes a product’s value legible, and legible value compounds. Adoption deepened, retention rose, and typography became the highest self-reported membership value of any Adobe service. Brand was not the cost line. It was the line that compounded.",
-  metrics: [
-    { value: "+40%", label: "monthly active users in the rebrand’s first year" },
-    { value: "42%", label: "less churn among members who adopted Adobe Fonts" },
-    { value: "Zero", label: "foundry losses through the rebrand" },
-  ] as Metric[],
-  caveat:
-    "Retention is correlational; adopters self-select. The defensible read: typography deepened engagement at scale, it did not single-handedly retain.",
-} as const;

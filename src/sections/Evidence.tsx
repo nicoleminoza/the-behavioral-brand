@@ -10,7 +10,6 @@
 import SectionHeader from "../components/SectionHeader";
 import { HeroCase } from "../components/CaseStudyBlock";
 import CaseGrid from "../components/CaseGrid";
-import OperatorCase from "../components/OperatorCase";
 import { heroes, supporting } from "../data/cases";
 import { caseAccent, evidence } from "../tokens/color";
 import { measure } from "../tokens/layout";
@@ -52,23 +51,11 @@ export default function Evidence() {
           The supporting six · read on demand
         </p>
         <p style={{ color: "var(--fog)", maxWidth: measure.prose, marginTop: "0.5rem" }}>
-          Six more, each labeled by catalyst. Open any card for the full brief, its
-          sources, and asset credits.
+          Six more, each labeled by catalyst. Open any card for the full brief and
+          its sources.
         </p>
       </div>
       <CaseGrid items={supporting} />
-
-      {/* Nine observed, one built: the operator proof, the author's own work. */}
-      <div style={{ padding: "calc(var(--gutter) * 1.8) var(--gutter) 0" }}>
-        <p className="eyebrow" style={{ color: caseAccent }}>
-          Nine observed · one built
-        </p>
-        <p style={{ color: "var(--fog)", maxWidth: measure.prose, marginTop: "0.5rem" }}>
-          The nine above are other people’s work, read from the outside. This one I
-          ran from the inside, at platform scale.
-        </p>
-      </div>
-      <OperatorCase />
     </section>
   );
 }
