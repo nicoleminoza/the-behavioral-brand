@@ -1,0 +1,13 @@
+node_modules
+dist
+dist-ssr
+*.local
+.DS_Store
+.vite
+
+# Internal standing orders / candid positioning notes — keep local, never publish
+CLAUDE.md
+
+# Build artifacts
+*.tsbuildinfo
+vite.config.js.timestamp-*.mjs

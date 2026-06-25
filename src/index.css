@@ -1,0 +1,227 @@
+/* index.css — global reset + type system, aligned to the brand guidelines
+   (nicoleminoza.com/brand-guidelines.html). Type is spatial; the base styles
+   stay quiet and the variable-font behavior does the talking. */
+
+:root {
+  /* Brand palette */
+  --paper: #faf6f1;
+  --paper-2: #f2eadf;
+  --ink: #241f1d;
+  --soft: #5d534c;
+  --fog: #a99d90; /* faint / tertiary */
+  --rule: #e6dccf;
+  --plum: #6b2c41;
+  --terracotta: #c07a44;
+
+  /* Type families */
+  --display: "Recursive", system-ui, sans-serif; /* kinetic headlines only */
+  --serif: "Newsreader", Georgia, serif; /* headlines, pull quotes, figures */
+  --sans: "Hanken Grotesk", system-ui, sans-serif; /* body, UI */
+  --mono: "Spline Sans Mono", ui-monospace, monospace; /* labels, metadata */
+
+  /* Variable-font axes, driven by the motion engine. */
+  --font-wght: 400;
+  --font-wdth: 100;
+  /* CSS-driven weight stops for hover + scroll behavior (single home). */
+  --wght-book: 440;
+  --wght-bold: 680;
+
+  /* Editorial scale. Large jumps, few steps. */
+  --step--1: clamp(0.83rem, 0.8rem + 0.15vw, 0.95rem);
+  --step-0: clamp(1rem, 0.95rem + 0.25vw, 1.15rem);
+  --step-1: clamp(1.4rem, 1.2rem + 1vw, 2rem);
+  --step-2: clamp(1.875rem, 1.4rem + 2.4vw, 3.125rem); /* section head, per guidelines */
+  --step-3: clamp(3.2rem, 2rem + 6vw, 7rem);
+  --step-4: clamp(3.625rem, 2.2rem + 7vw, 8.625rem); /* display, per guidelines */
+
+  /* Layout tokens, per guidelines */
+  --measure: 64ch;
+  --max-width: 1180px;
+  --gutter: clamp(20px, 5vw, 72px);
+  --section-pad: clamp(52px, 6.5vw, 96px);
+}
+
+/* Register the axes so transitions can interpolate them smoothly. Browsers
+   without @property degrade to an instant weight swap, which is acceptable. */
+@property --font-wght {
+  syntax: "<number>";
+  inherits: true;
+  initial-value: 400;
+}
+@property --font-wdth {
+  syntax: "<number>";
+  inherits: true;
+  initial-value: 100;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+body {
+  background: var(--ink);
+  color: var(--paper);
+  font-family: var(--sans);
+  font-size: 1.0625rem; /* 17px */
+  line-height: 1.62;
+  font-feature-settings: "ss01";
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* Body copy: improve the rag and kill orphans without justifying. */
+p {
+  text-wrap: pretty;
+}
+
+h1,
+h2,
+h3,
+.display {
+  font-family: var(--serif);
+  font-weight: 600;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  /* Even the rag on short headlines. */
+  text-wrap: balance;
+}
+
+/* Variable-font driver: any element opting in reads the axis custom properties.
+   Fonts without a given axis ignore it harmlessly. */
+.vf {
+  font-variation-settings: "wght" var(--font-wght), "wdth" var(--font-wdth);
+}
+
+p {
+  max-width: var(--measure);
+}
+
+.eyebrow {
+  font-family: var(--mono);
+  font-size: var(--step--1);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--fog);
+  font-weight: 500;
+}
+
+.mono {
+  font-family: var(--mono);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.02em;
+}
+
+::selection {
+  background: var(--plum);
+  color: var(--paper);
+}
+
+/* The single call to action: white on plum, per the brand guideline. Lift on
+   hover (2px, 180ms), never a bounce. One per page. */
+.cta {
+  display: inline-block;
+  background: var(--plum);
+  color: var(--paper);
+  font-family: var(--sans);
+  font-weight: 600;
+  font-size: var(--step-0);
+  text-decoration: none;
+  padding: 0.85rem 1.75rem;
+  border-radius: 100px;
+  transition: transform 180ms ease, box-shadow 180ms ease;
+}
+.cta:hover,
+.cta:focus-visible {
+  transform: translateY(-2px);
+  box-shadow: 0 22px 48px -30px rgba(36, 31, 29, 0.45);
+}
+@media (prefers-reduced-motion: reduce) {
+  .cta {
+    transition: box-shadow 180ms ease;
+  }
+  .cta:hover,
+  .cta:focus-visible {
+    transform: none;
+  }
+}
+
+/* Colophon specimen: each typeface name performs its own weight axis on hover.
+   Subtle and disciplined, no loop. Every face here is loaded as a variable font. */
+.vf-name {
+  font-variation-settings: "wght" 400;
+  transition: font-variation-settings 220ms ease;
+}
+.vf-name:hover,
+.vf-name:focus-visible {
+  font-variation-settings: "wght" 640;
+}
+@media (prefers-reduced-motion: reduce) {
+  .vf-name {
+    transition: none;
+  }
+}
+
+/* Source links: distinguishable by underline, not color alone (a11y). */
+.source-link {
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+  text-decoration-color: color-mix(in srgb, currentColor 40%, transparent);
+  transition: color 150ms ease, text-decoration-color 150ms ease;
+}
+.source-link:hover,
+.source-link:focus-visible {
+  color: var(--paper);
+  text-decoration-color: var(--terracotta);
+}
+
+/* Disciplined hover on the interactive grid cards: the serif name shifts from a
+   book weight to authoritative, fast ease, nothing bounces. Reads --font-wght so
+   the morph interpolates where @property is supported. */
+.case-card-name {
+  --font-wght: var(--wght-book);
+  font-variation-settings: "wght" var(--font-wght);
+  transition: --font-wght 180ms ease;
+}
+.case-card:hover .case-card-name,
+.case-card:focus-visible .case-card-name {
+  --font-wght: var(--wght-bold);
+}
+.case-card:focus-visible {
+  outline: 2px solid var(--terracotta);
+  outline-offset: -2px;
+}
+@media (prefers-reduced-motion: reduce) {
+  .case-card-name {
+    transition: none;
+  }
+}
+
+/* Executive Summary Grid: three across on desktop, stacking down on narrow. */
+@media (max-width: 860px) {
+  .case-grid-row {
+    grid-template-columns: 1fr 1fr !important;
+  }
+}
+
+@media (max-width: 560px) {
+  .case-grid-row {
+    grid-template-columns: 1fr !important;
+  }
+  .case-drawer {
+    grid-template-columns: 1fr !important;
+  }
+}
