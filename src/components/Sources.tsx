@@ -1,6 +1,6 @@
 /**
- * Sources.tsx — the discrete "Sources & References" mechanism each benchmark
- * carries. A quiet metadata block, not body copy.
+ * Sources.tsx — the discrete "Sources" mechanism each benchmark carries.
+ * A quiet metadata block, not body copy.
  *
  * A case may carry either a prose credit (a sentence with inline links, via
  * `credits`) or a plain list of references (via `sources`). The prose form wins
@@ -18,7 +18,7 @@ export default function Sources({ id }: { id: string }) {
   return (
     <div style={{ marginTop: "1.25rem" }}>
       <p className="eyebrow" style={{ color: caseAccent, marginBottom: "0.5rem" }}>
-        Further Exploration
+        Sources
       </p>
 
       {credit ? (
