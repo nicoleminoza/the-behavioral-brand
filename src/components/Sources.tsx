@@ -18,7 +18,7 @@ export default function Sources({ id }: { id: string }) {
   return (
     <div style={{ marginTop: "1.25rem" }}>
       <p className="eyebrow" style={{ color: caseAccent, marginBottom: "0.5rem" }}>
-        Sources &amp; References
+        Further Exploration
       </p>
 
       {credit ? (
