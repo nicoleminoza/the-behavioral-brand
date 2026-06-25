@@ -162,16 +162,6 @@ function Drawer({ c }: { c: CaseStudy }) {
       </div>
       <div>
         <Sources id={c.id} />
-        <p
-          className="mono"
-          style={{
-            marginTop: "1.25rem",
-            fontSize: "var(--step--1)",
-            color: "var(--fog)",
-          }}
-        >
-          Assets &amp; credit: {c.partner} [+ creator]
-        </p>
       </div>
     </div>
   );
