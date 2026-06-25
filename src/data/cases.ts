@@ -347,11 +347,6 @@ export const sources: Record<string, Source[]> = {
       url: "https://www.creativeboom.com/news/the-brooklyn-museum-unveils-its-new-look-with-its-200-year-history-at-its-heart/",
     },
   ],
-  "adobe-fonts": [
-    { label: "nicoleminoza.com", url: "https://nicoleminoza.com" },
-    { label: "Résumé", url: "https://nicoleminoza.com/resume.html" },
-    { label: "Timeline", url: "https://nicoleminoza.com/timeline.html" },
-  ],
 };
 
 /** A headline figure for the operator case: a number and what it measures. */
@@ -379,12 +374,9 @@ export const operatorCase = {
   thesis:
     "A brand that performs makes a product’s value legible, and legible value compounds. Adoption deepened, retention rose, and typography became the highest self-reported membership value of any Adobe service. Brand was not the cost line. It was the line that compounded.",
   metrics: [
-    { value: "12M+", label: "monthly active users, growing 3× the rate of Creative Cloud" },
-    { value: "+40%", label: "active users in the rebrand’s first year, zero foundry losses" },
-    { value: "66%", label: "less churn among members who adopted Adobe Fonts" },
-    { value: "+186%", label: "free-to-paid conversion on redesigned font recommendations" },
-    { value: "1.5B", label: "users addressed by Source Han Sans, the first open-source Pan-CJK face" },
-    { value: "$1M", label: "year-one savings from a usage-based royalty model" },
+    { value: "+40%", label: "monthly active users in the rebrand’s first year" },
+    { value: "42%", label: "less churn among members who adopted Adobe Fonts" },
+    { value: "Zero", label: "foundry losses through the rebrand" },
   ] as Metric[],
   caveat:
     "Retention is correlational; adopters self-select. The defensible read: typography deepened engagement at scale, it did not single-handedly retain.",

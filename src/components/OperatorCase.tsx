@@ -9,7 +9,6 @@
  */
 
 import PerformingType from "./PerformingType";
-import Sources from "./Sources";
 import { caseAccent } from "../tokens/color";
 import { rule } from "../tokens/layout";
 import { operatorCase } from "../data/cases";
@@ -81,7 +80,6 @@ export default function OperatorCase() {
           >
             {c.caveat}
           </p>
-          <Sources id={c.id} />
         </div>
 
         {/* Metrics register: figures in the serif, per the brand guideline. */}
