@@ -13,7 +13,6 @@
 import { motion } from "framer-motion";
 import PerformingType from "./PerformingType";
 import Sources from "./Sources";
-import BrandAssets from "./BrandAssets";
 import { caseAccent, evidence } from "../tokens/color";
 import { columns, rule } from "../tokens/layout";
 import { spring } from "../tokens/motion";
@@ -127,8 +126,6 @@ export function HeroCase({ c }: { c: CaseStudy }) {
             equivalent of the chassis: structure holds it, color marks the structure. */}
         <SpecRegister c={c} accent={accent} />
       </div>
-
-      <BrandAssets credit={c.partner} />
     </article>
   );
 }

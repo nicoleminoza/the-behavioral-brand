@@ -251,13 +251,32 @@ export const summaries: Record<string, string> = {
  * analysis (seen in the TLDR Design newsletter); the other seven were surfaced
  * through design-press research. Add `url` to any entry to make it a live link.
  */
-export const sources: Record<string, Source[]> = {
+/**
+ * A prose credit: a sentence rendered with inline links. When a case has a
+ * `credits` entry it overrides the plain `sources` list for that case.
+ */
+export interface CreditSegment {
+  text: string;
+  url?: string;
+}
+
+export const credits: Record<string, CreditSegment[]> = {
   norton: [
+    { text: "See the full system in " },
     {
-      label: "Creative Boom",
+      text: "Koto’s case study",
+      url: "https://koto.com/projects/the-norton-museum-of-art",
+    },
+    { text: ". For the industry reaction, read " },
+    {
+      text: "Creative Boom",
       url: "https://www.creativeboom.com/news/koto-rebrands-the-norton-museum-of-art-with-an-identity-where-art-truly-meets-life/",
     },
+    { text: "." },
   ],
+};
+
+export const sources: Record<string, Source[]> = {
   "young-vic": [
     {
       label: "It’s Nice That",
