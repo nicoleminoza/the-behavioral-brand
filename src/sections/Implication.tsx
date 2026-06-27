@@ -196,21 +196,23 @@ export default function Implication() {
           I make this argument from inside the room where boards decide what brand
           is worth.
         </p>
-        <p
-          className="mono"
-          style={{
-            marginTop: "0.6rem",
-            fontSize: "var(--step--1)",
-            color: "var(--soft)",
-            maxWidth: measure.prose,
-            lineHeight: 1.6,
-          }}
-        >
-          Method: nine benchmarks. Two (Koto’s Norton, venturethree’s Young Vic)
-          sparked this analysis; the other seven were surfaced through design-press
-          research and the originating agencies’ case studies. Sources are credited
-          per case.
-        </p>
+        <details className="method" style={{ marginTop: "0.6rem", maxWidth: measure.prose }}>
+          <summary className="mono">Method</summary>
+          <p
+            className="mono"
+            style={{
+              marginTop: "0.6rem",
+              fontSize: "var(--step--1)",
+              color: "var(--soft)",
+              lineHeight: 1.6,
+            }}
+          >
+            Nine benchmarks. Two (Koto’s Norton, venturethree’s Young Vic)
+            sparked this analysis; the other seven were surfaced through design-press
+            research and the originating agencies’ case studies. Sources are credited
+            per case.
+          </p>
+        </details>
         {/* Each typeface name set in its own face: the credit doubles as a specimen. */}
         <p style={{ fontSize: "var(--step--1)", color: "var(--soft)" }}>
           Typeset in{" "}
@@ -230,6 +232,19 @@ export default function Implication() {
             Spline Sans Mono
           </span>
           .
+        </p>
+        <p
+          className="mono"
+          style={{
+            marginTop: "0.6rem",
+            fontSize: "var(--step--2)",
+            color: "var(--soft)",
+            letterSpacing: "0.14em",
+            textTransform: "uppercase",
+            opacity: 0.7,
+          }}
+        >
+          The Behavioral Brand · v1.0 · 2026
         </p>
       </footer>
 

@@ -173,6 +173,30 @@ p {
   }
 }
 
+/* Colophon Method disclosure: a terracotta +/- affordance, no default marker.
+   Reads as expandable without breaking the restraint of the close. */
+details.method summary {
+  font-size: var(--step--1);
+  color: var(--soft);
+  cursor: pointer;
+  list-style: none;
+  letter-spacing: 0.08em;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5ch;
+  transition: color 150ms ease;
+}
+details.method summary::-webkit-details-marker { display: none; }
+details.method summary::before {
+  content: "+";
+  width: 1ch;
+  color: var(--terracotta);
+  font-weight: 500;
+}
+details.method[open] summary::before { content: "\2212"; }
+details.method summary:hover,
+details.method summary:focus-visible { color: var(--ink); }
+
 /* Source links: distinguishable by underline, not color alone (a11y). */
 .source-link {
   color: inherit;
