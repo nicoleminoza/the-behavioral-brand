@@ -244,7 +244,7 @@ export default function Implication() {
             opacity: 0.7,
           }}
         >
-          The Behavioral Brand · v1.0 · 2026
+          How Institutions Behave · v1.1 · 2026
         </p>
       </footer>
 
