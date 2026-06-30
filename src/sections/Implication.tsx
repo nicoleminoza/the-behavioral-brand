@@ -187,7 +187,10 @@ export default function Implication() {
         <p className="mono" style={{ fontSize: "var(--step--1)", color: accent }}>
           Nicole Miñoza
         </p>
-        <p style={{ fontSize: "var(--step--1)", color: implication.fg }}>
+        <p className="mono" style={{ fontSize: "var(--step--2)", color: implication.fg, marginTop: "0.15rem", letterSpacing: "0.04em" }}>
+          Essay · Published June 2026
+        </p>
+        <p style={{ fontSize: "var(--step--1)", color: implication.fg, marginTop: "0.6rem" }}>
           Product and product marketing leadership at Adobe, 2002 to 2026. Board of
           directors, Bainbridge Island Museum of Art. Global advisor for How Women
           Lead, counseling senior women leaders on brand, marketing, and communications.
