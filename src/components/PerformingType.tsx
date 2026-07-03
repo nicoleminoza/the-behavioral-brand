@@ -11,9 +11,16 @@
  * logo, it is the institution's argument made visible. Here, the argument is
  * "brand is behavior," and the headline literally behaves.
  *
+ * Two deliberate craft decisions:
+ *  - Weight is a WORD-level property; slant is per-letter. A word blooms to a
+ *    single cohesive weight so it never reads as uneven color, while individual
+ *    letters nearest the reader lean the most. The word stays a word; the letters
+ *    still perform.
+ *  - On first view the line performs itself once (a reading-order bloom), so the
+ *    behavior is demonstrated before any input. A static reader still sees it move.
+ *
  * Restraint is the law (see motion.ts). Weight and slant move across deliberately
- * narrow bands. A discerning reader notices; a casual one feels it. With
- * prefers-reduced-motion the type resolves to a single composed static state.
+ * narrow bands. With prefers-reduced-motion the type resolves to a single static state.
  */
 
 import {
@@ -29,6 +36,7 @@ import {
   type MotionStyle,
 } from "framer-motion";
 import {
+  useCallback,
   useEffect,
   useMemo,
   useRef,
@@ -46,12 +54,25 @@ interface PerformingTypeProps {
   reach?: number;
 }
 
-interface Registration {
+/** Per-letter registration: element, cached center, and its slant spring. */
+interface LetterReg {
   el: HTMLSpanElement;
-  intensity: MotionValue<number>;
+  slant: MotionValue<number>;
   cx: number;
   cy: number;
 }
+/** Per-word registration: the shared weight spring and its letter indices. */
+interface WordReg {
+  weight: MotionValue<number>;
+  idxs: number[];
+}
+
+const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
+const easeInOut = (t: number) => (t < 0.5 ? 2 * t * t : 1 - (-2 * t + 2) ** 2 / 2);
+
+/** Entrance timing: a one-time reading-order bloom on first view. */
+const ENTRANCE_MS = 1800;
+const ENTRANCE_SIGMA = 2.2; // bloom width, in letters
 
 export default function PerformingType({
   text,
@@ -63,21 +84,33 @@ export default function PerformingType({
   const reduce = useReducedMotion() ?? false;
   const containerRef = useRef<HTMLHeadingElement>(null);
   const inView = useInView(containerRef, { amount: 0.3 });
-  const registry = useRef<Registration[]>([]);
+
+  const letters = useRef<(LetterReg | null)[]>([]);
+  const words = useRef<WordReg[]>([]);
+  const proximity = useRef<number[]>([]);
 
   // Pointer position in viewport coordinates, updated outside React state.
   const pointer = useRef({ x: -9999, y: -9999, active: false });
-
   // Whether the pointer is over this headline. A hover lifts the whole line.
   const hovering = useRef(false);
+  // Timestamp the entrance performance began (set on first in-view frame).
+  const entranceStart = useRef<number | null>(null);
 
-  // Scroll velocity → a baseline performance level the whole headline shares.
+  // Scroll velocity → a baseline the whole headline shares.
   const { scrollY } = useScroll();
   const scrollVelocity = useVelocity(scrollY);
 
-  const register = useMemo(
-    () => (reg: Registration | null, index: number) => {
-      if (reg) registry.current[index] = reg;
+  const totalLetters = useMemo(
+    () => Array.from(text).filter((ch) => ch !== " ").length,
+    [text]
+  );
+
+  const registerLetter = useCallback((reg: LetterReg | null, index: number) => {
+    letters.current[index] = reg;
+  }, []);
+  const registerWord = useCallback(
+    (wordId: number, weight: MotionValue<number>, idxs: number[]) => {
+      words.current[wordId] = { weight, idxs };
     },
     []
   );
@@ -86,7 +119,7 @@ export default function PerformingType({
   useEffect(() => {
     if (reduce) return;
     const measure = () => {
-      for (const reg of registry.current) {
+      for (const reg of letters.current) {
         if (!reg?.el) continue;
         const r = reg.el.getBoundingClientRect();
         reg.cx = r.left + r.width / 2;
@@ -115,46 +148,79 @@ export default function PerformingType({
     };
   }, [reduce]);
 
-  // The loop. Combine a shared scroll baseline with per-letter pointer proximity,
-  // then push each letter's spring toward its target. The spring smooths the rest.
-  useAnimationFrame(() => {
-    if (reduce || !inView) return;
+  // The loop. Slant is per-letter (pointer proximity + entrance bloom); weight is
+  // the max of a word's letters, so the whole word blooms as one cohesive unit.
+  useAnimationFrame((t) => {
+    if (reduce || !inView || !words.current.length) return;
+
+    // One-time entrance: a bloom that sweeps through the line in reading order.
+    if (entranceStart.current === null) entranceStart.current = t;
+    const elapsed = t - entranceStart.current;
+    const entranceOn = elapsed < ENTRANCE_MS;
+    const lead = entranceOn
+      ? easeInOut(Math.min(1, elapsed / ENTRANCE_MS)) * (totalLetters - 1)
+      : -1;
 
     const v = Math.abs(scrollVelocity.get());
-    const scrollBaseline =
-      Math.min(v / perform.scrollDivisor, 1) * perform.scrollPeak;
+    const scrollBaseline = Math.min(v / perform.scrollDivisor, 1) * perform.scrollPeak;
     const hoverBase = hovering.current ? perform.hover : 0;
+    const base = Math.max(scrollBaseline, hoverBase);
 
     const p = pointer.current;
-    for (const reg of registry.current) {
-      if (!reg) continue;
-      let proximity = 0;
+    const prox = proximity.current;
+    const regs = letters.current;
+    const sigma = reach / 2;
+
+    for (let i = 0; i < regs.length; i++) {
+      const reg = regs[i];
+      if (!reg) {
+        prox[i] = 0;
+        continue;
+      }
+      let near = 0;
       if (p.active) {
         const dx = reg.cx - p.x;
         const dy = reg.cy - p.y;
         const dist = Math.hypot(dx, dy);
-        // Gaussian falloff: full at the cursor, ~0 by `reach`.
-        proximity = Math.exp(-(dist * dist) / (2 * (reach / 2) ** 2));
+        near = Math.exp(-(dist * dist) / (2 * sigma * sigma));
       }
-      const target = Math.min(1, Math.max(scrollBaseline, hoverBase, proximity));
-      reg.intensity.set(target);
+      if (entranceOn) {
+        const di = i - lead;
+        const e = Math.exp(-(di * di) / (2 * ENTRANCE_SIGMA * ENTRANCE_SIGMA));
+        if (e > near) near = e;
+      }
+      const target = Math.min(1, Math.max(base, near));
+      reg.slant.set(target); // per-letter slant
+      prox[i] = target;
+    }
+
+    // Per-word weight = the strongest target among the word's letters.
+    const ws = words.current;
+    for (let w = 0; w < ws.length; w++) {
+      const wd = ws[w];
+      if (!wd) continue;
+      let m = base;
+      for (const idx of wd.idxs) {
+        if (prox[idx] > m) m = prox[idx];
+      }
+      wd.weight.set(Math.min(1, m));
     }
   });
 
   // Group letters into words. Each word is one inline-block that stays whole, so
-  // the headline only ever breaks at spaces, never mid-word (and never collapses
-  // to one glyph per line in a narrow column). Letters keep a stable global index
-  // so the animation registry stays aligned.
+  // the headline only ever breaks at spaces, never mid-word. Letters keep a stable
+  // global index so the animation registries stay aligned.
   type Token =
-    | { kind: "word"; letters: { ch: string; i: number }[] }
+    | { kind: "word"; id: number; letters: { ch: string; i: number }[] }
     | { kind: "space" };
   const tokens = useMemo<Token[]>(() => {
     const out: Token[] = [];
     let word: { ch: string; i: number }[] = [];
+    let wordId = 0;
     Array.from(text).forEach((ch, i) => {
       if (ch === " ") {
         if (word.length) {
-          out.push({ kind: "word", letters: word });
+          out.push({ kind: "word", id: wordId++, letters: word });
           word = [];
         }
         out.push({ kind: "space" });
@@ -162,7 +228,7 @@ export default function PerformingType({
         word.push({ ch, i });
       }
     });
-    if (word.length) out.push({ kind: "word", letters: word });
+    if (word.length) out.push({ kind: "word", id: wordId++, letters: word });
     return out;
   }, [text]);
 
@@ -177,24 +243,18 @@ export default function PerformingType({
       onPointerEnter={() => (hovering.current = true)}
       onPointerLeave={() => (hovering.current = false)}
     >
-      {tokens.map((t, ti) =>
+      {tokens.map((t) =>
         t.kind === "space" ? (
           " "
         ) : (
-          <span
-            key={`w${ti}`}
-            style={{ display: "inline-block", whiteSpace: "nowrap" }}
-          >
-            {t.letters.map((l) => (
-              <Letter
-                key={l.i}
-                char={l.ch}
-                index={l.i}
-                register={register}
-                staticState={reduce}
-              />
-            ))}
-          </span>
+          <Word
+            key={`w${t.id}`}
+            wordId={t.id}
+            letters={t.letters}
+            registerWord={registerWord}
+            registerLetter={registerLetter}
+            staticState={reduce}
+          />
         )
       )}
     </Tag>
@@ -202,39 +262,79 @@ export default function PerformingType({
 }
 
 /**
- * One letter. Owns its own spring so deformation is independent and smooth.
- * Registers its element + intensity value up to the parent loop.
+ * A word. Owns the single weight spring its letters share, so the word blooms as
+ * one cohesive unit rather than as a gradient of mismatched glyph weights.
+ */
+function Word({
+  wordId,
+  letters,
+  registerWord,
+  registerLetter,
+  staticState,
+}: {
+  wordId: number;
+  letters: { ch: string; i: number }[];
+  registerWord: (id: number, weight: MotionValue<number>, idxs: number[]) => void;
+  registerLetter: (reg: LetterReg | null, i: number) => void;
+  staticState: boolean;
+}) {
+  const weight = useSpring(0, spring.calm);
+  const idxs = useMemo(() => letters.map((l) => l.i), [letters]);
+
+  useEffect(() => {
+    if (staticState) return;
+    registerWord(wordId, weight, idxs);
+  }, [staticState, registerWord, wordId, weight, idxs]);
+
+  return (
+    <span style={{ display: "inline-block", whiteSpace: "nowrap" }}>
+      {letters.map((l) => (
+        <Letter
+          key={l.i}
+          char={l.ch}
+          index={l.i}
+          wordWeight={weight}
+          register={registerLetter}
+          staticState={staticState}
+        />
+      ))}
+    </span>
+  );
+}
+
+/**
+ * One letter. Owns its own slant spring (independent, per-letter lean) and reads
+ * its word's shared weight spring, so weight is cohesive and slant is expressive.
  */
 function Letter({
   char,
   index,
+  wordWeight,
   register,
   staticState,
 }: {
   char: string;
   index: number;
-  register: (reg: Registration | null, i: number) => void;
+  wordWeight: MotionValue<number>;
+  register: (reg: LetterReg | null, i: number) => void;
   staticState: boolean;
 }) {
   const ref = useRef<HTMLSpanElement>(null);
-  const intensity = useSpring(0, spring.calm);
-  // The spring drives the axis custom properties; CSS maps them to
-  // font-variation-settings. This is the reusable engine API: any element can
-  // animate the same --font-wght / --font-slnt with a plain CSS transition.
-  const fontWght = useTransform(intensity, (v) =>
-    Math.round(
-      typeAxes.weight.rest + (typeAxes.weight.peak - typeAxes.weight.rest) * v
-    )
+  const slant = useSpring(0, spring.calm);
+  // The springs drive the axis custom properties; CSS maps them to
+  // font-variation-settings. Weight comes from the word, slant from this letter.
+  const fontWght = useTransform(wordWeight, (v) =>
+    Math.round(lerp(typeAxes.weight.rest, typeAxes.weight.peak, v))
   );
-  const fontSlnt = useTransform(intensity, (v) =>
-    (typeAxes.slant.rest + (typeAxes.slant.peak - typeAxes.slant.rest) * v).toFixed(2)
+  const fontSlnt = useTransform(slant, (v) =>
+    lerp(typeAxes.slant.rest, typeAxes.slant.peak, v).toFixed(2)
   );
 
   useEffect(() => {
     if (staticState || !ref.current) return;
-    register({ el: ref.current, intensity, cx: 0, cy: 0 }, index);
+    register({ el: ref.current, slant, cx: 0, cy: 0 }, index);
     return () => register(null, index);
-  }, [register, index, intensity, staticState]);
+  }, [register, index, slant, staticState]);
 
   // Reduced motion: one composed static weight, engine off.
   if (staticState) {
