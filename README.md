@@ -4,7 +4,7 @@
 
 **Read it:** [nicoleminoza.com/how-institutions-behave](https://nicoleminoza.com/how-institutions-behave)
 
-[hib-hero.webm](https://github.com/user-attachments/assets/ecba4fe0-cf0e-4e8f-9b14-4bc22d6f053d)
+<a href="https://nicoleminoza.com/how-institutions-behave"><img src="public/hib-hero.gif" width="560" alt="Brand is behavior, not image. Why institutions that perform their values outgrow the ones that describe them."></a>
 
 ## The question
 
