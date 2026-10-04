@@ -1,10 +1,14 @@
 # How Institutions Behave
 
-**Brand is behavior, not image.** An interactive essay on why institutions that perform their values outgrow the ones that describe them, built from a benchmark of nine cultural-institution rebrands.
+**Brand is behavior, not image.** An interactive thesis on what happens when an institution’s positioning is expressed through the product, experience, and operating choices, not just its visual identity.
 
 **Read it:** [nicoleminoza.com/how-institutions-behave](https://nicoleminoza.com/how-institutions-behave)
 
 [hib-hero.webm](https://github.com/user-attachments/assets/ecba4fe0-cf0e-4e8f-9b14-4bc22d6f053d)
+
+## The question
+
+What changes when positioning stops being something an organization says and becomes something the product, customer experience, and organization consistently do?
 
 ## The argument
 
@@ -19,6 +23,10 @@ The essay runs in three acts:
 1. **Premise:** the thesis, the standpoint, and the tension cultural institutions face between prestige and access.
 2. **Evidence:** three cases at full depth, one per mechanic, then six supporting cases in an expandable grid, each with its brief and sources.
 3. **Implication:** the transferable insight, the limit of the argument, and four questions a board should answer before funding a brand investment.
+
+## Why it applies beyond museums
+
+Cultural institutions make brand decisions in public, so the mechanics are easy to see. The same problem appears in any organization aligning a brand across a portfolio, product, and market: at scale, the brand either performs inside the product and customer experience or it fails.
 
 ## The benchmark
 
@@ -40,22 +48,15 @@ The first three are covered in depth. Every case is credited to its sources.
 
 Every outcome on the site carries its confounders in plain sight: new leadership, post-pandemic recovery, programming changes. Agency-reported numbers are labeled as agency-reported. The argument rests on directional evidence and design logic, not a causal claim.
 
-## Why it applies beyond museums
-
-Cultural institutions make their brand decisions in public, so the mechanics are easy to see. The problem is the same for any organization aligning a brand across a portfolio, a product and a market: at scale, the brand either performs inside the product or it fails.
-
 ## The build
 
 The site makes the same argument in code: coherence comes from a governed system, not a decorative mark.
+- Design system: motion, layout, color, and type are controlled through shared tokens rather than page-by-page styling.
+- Interaction: custom kinetic typography responds to cursor and scroll input, so movement carries meaning rather than serving as decoration.
+- Evidence model: the nine institutions, case summaries, and source material are structured as data, making the benchmark consistent and reusable.
+- Original studies: the kinetic experiments interpret the mechanics used by the benchmark institutions; they are not reproductions of any institution’s work.
 
-- **Tokens** (`src/tokens/`): motion, layout and color. Color marks structure, never the content inside it.
-- **Performing type** (`src/components/PerformingType.tsx`): variable-font headlines that respond to the cursor and scroll.
-- **Case grid** (`src/components/CaseGrid.tsx`): the expandable evidence grid.
-- **Case data** (`src/data/cases.ts`): the nine institutions, summaries and sources.
-
-The kinetic studies interpret the mechanics the benchmark institutions used. They are original work, not reproductions of any institution's marks, typefaces or assets.
-
-**Stack:** Vite, React, TypeScript, Framer Motion. Typeset in Recursive, Newsreader, Hanken Grotesk and Spline Sans Mono. No backend; deploys as a static build.
+Stack: Vite, React, TypeScript, and Framer Motion, with custom type using Recursive, Newsreader, Hanken Grotesk, and Spline Sans Mono. No backend; the site deploys as a static build.
 
 ## Run it locally
 
@@ -68,4 +69,4 @@ npm run preview   # serve the production build
 
 ## Author
 
-[Nicole Miñoza](https://nicoleminoza.com), product and product marketing leader. 23 years at Adobe, most recently Director of Product Management. Board member, Bainbridge Island Museum of Art.
+[Nicole Miñoza](https://nicoleminoza.com), product and product marketing leader; former Adobe Director of Product Management. Board member, Bainbridge Island Museum of Art.
