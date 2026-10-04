@@ -4,7 +4,7 @@
 
 **Read it:** [nicoleminoza.com/how-institutions-behave](https://nicoleminoza.com/how-institutions-behave)
 
-PASTE-VIDEO-URL-HERE
+[hib-hero.webm](https://github.com/user-attachments/assets/ecba4fe0-cf0e-4e8f-9b14-4bc22d6f053d)
 
 ## The argument
 
